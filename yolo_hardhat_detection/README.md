@@ -50,7 +50,8 @@ Supports image upload, video upload (with downloadable annotated output), and li
 ⚠️ Known limitations
 The model performs best on imagery similar to its training distribution (medium-distance, outdoor/industrial settings). Performance may degrade on out-of-distribution inputs, such as close-range indoor selfie-style webcam shots.
 The Streamlit webcam tab provides visual detection only (bounding boxes + on-frame text) — the audio alarm is not supported there due to a threading limitation in streamlit-webrtc. Use head_alarm_detection.py locally for the full audio alarm experience.
-The person class from the original dataset was excluded due to insufficient training data (see Dataset & Results above).
+In order to try the detction and the alarm real sound , run this file : python3 yolo_hardhat_detection/head_alarm_detection.py
+
 📁 Project structure
 yolo_hardhat_detection/
 │
@@ -64,14 +65,12 @@ yolo_hardhat_detection/
 │
 ├── models/
 │   └── best_final_model.pt
+|   └── Initial_model.pt
 │
 ├── assets/
 │   └── alarm.mp3
 │
-└── sample_results/
-    ├── demo.gif
-    ├── image1.jpg
-    └── image2.jpg
+
 🙏 Acknowledgments
 Dataset: Hard Hat Detection by Andrew Mvd (Kaggle)
 Built with Ultralytics YOLO11
