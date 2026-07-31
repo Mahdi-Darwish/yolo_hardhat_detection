@@ -1,0 +1,8 @@
+path: /Users/mahdidarwish/Desktop/Yolo_project1_hat_wrokers_detection/dataset
+train: train/images
+val: val/images
+test: test/images
+
+names:
+  0: head
+  1: helmet

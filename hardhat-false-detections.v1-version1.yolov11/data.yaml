@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['head']
+
+roboflow:
+  workspace: mahdis-workspace-lsqsl
+  project: hardhat-false-detections
+  version: 1
+  license: Private
+  url: https://app.roboflow.com/mahdis-workspace-lsqsl/hardhat-false-detections/1
