@@ -1,58 +1,241 @@
-Readme · MD
-🦺 Hard Hat Safety Detection
+# 🦺 Hard Hat Safety Detection
 
-A real-time object detection system that identifies whether workers are wearing hard hats, built with YOLOv11 (Ultralytics). Includes a live webcam alarm system and a Streamlit web app supporting image, video, and webcam input.
+A real-time object detection system that identifies whether workers are wearing hard hats, built with **YOLOv11 (Ultralytics)**.
 
-This project was built as a hands-on exercise in the full object detection pipeline: dataset preparation, format conversion, training, evaluation, error analysis, and deployment.
+The project includes:
+- A live webcam detection system with an audio alarm.
+- A Streamlit web application supporting image, video, and webcam input.
 
-🎯 What it does
-Detects two classes in real time: head (no hard hat — safety violation) and helmet (hard hat worn — safe)
-Triggers an audio alarm when a worker without a hard hat is detected for several consecutive frames, and automatically stops the moment a hard hat is detected again
-Provides a Streamlit web interface supporting image upload, video upload, and live webcam detection
-📊 Dataset & Results
+This project was built as a hands-on exercise covering the complete object detection pipeline:
 
-Trained on the Hard Hat Detection dataset (Kaggle, 5,000 annotated images, Pascal VOC format), converted to YOLO format and split 70/20/10 into train/val/test.
+- Dataset preparation
+- Annotation conversion
+- Model training
+- Evaluation
+- Error analysis
+- Deployment
 
-The original dataset includes a person class, which was dropped after training revealed severe class imbalance (only ~750 annotations vs. ~19,000 for helmet) caused the model to fail to learn it entirely (0% precision/recall). The final model trains on head and helmet only.
+---
 
-Final model performance (YOLO11s, 50 epochs):
+# 🎯 What It Does
 
-Class	Precision	Recall	mAP50	mAP50-95
-head	0.907	0.895	0.943	0.626
-helmet	0.940	0.917	0.957	0.628
-Overall	0.923	0.906	0.950	0.627
+The system detects two classes in real time:
 
-The dataset was also supplemented with manually labeled real-world false-detection examples (close-range indoor images) to improve robustness beyond the original dataset's construction-site imagery.
+- **head** → Worker without a hard hat (safety violation)
+- **helmet** → Worker wearing a hard hat (safe)
 
-🛠️ Pipeline overview
-prepare_dataset.py — converts Pascal VOC XML annotations to YOLO format and splits the dataset into train/val/test
-Training — run on Google Colab (T4 GPU) using ultralytics YOLO11s, 50 epochs, 640px images
-head_alarm_detection.py — real-time webcam detection with an audio alarm for no-helmet violations
-app.py — Streamlit web app for image/video/webcam detection
-🚀 Running locally
-Setup
-bash
+## Features
+
+- Detects hard hat violations using **YOLO11s**.
+- Triggers an audio alarm when a worker without a helmet is detected for several consecutive frames.
+- Automatically stops the alarm when a helmet is detected again.
+- Provides a Streamlit web interface supporting:
+  - Image upload
+  - Video upload
+  - Live webcam detection
+
+---
+
+# 📊 Dataset & Results
+
+The model was trained on the **Hard Hat Detection dataset** from Kaggle containing approximately:
+
+- **5,000 annotated images**
+- **Pascal VOC annotation format**
+
+The dataset was converted into YOLO format and split into:
+
+- **70% Training**
+- **20% Validation**
+- **10% Testing**
+
+---
+
+## Dataset Modification
+
+The original dataset contained three classes:
+
+- person
+- head
+- helmet
+
+After training analysis, the **person** class was removed because of severe class imbalance:
+
+- Person annotations: ~750
+- Helmet annotations: ~19,000
+
+The model failed to learn the person class effectively:
+
+- Precision: 0%
+- Recall: 0%
+
+Therefore, the final model was trained only on:
+
+- **head**
+- **helmet**
+
+---
+
+# 📈 Final Model Performance
+
+**Model:** YOLO11s  
+**Training:** 50 epochs  
+**Image Size:** 640×640  
+
+
+| Class | Precision | Recall | mAP50 | mAP50-95 |
+|------|-----------|--------|-------|----------|
+| head | 0.907 | 0.895 | 0.943 | 0.626 |
+| helmet | 0.940 | 0.917 | 0.957 | 0.628 |
+| Overall | 0.923 | 0.906 | 0.950 | 0.627 |
+
+---
+
+The dataset was also supplemented with manually labeled real-world false detection examples (mainly close-range indoor images) to improve robustness beyond the original construction-site imagery.
+
+---
+
+# 🛠️ Pipeline Overview
+
+## Dataset Preparation
+
+### `prepare_dataset.py`
+
+Responsible for:
+
+- Converting Pascal VOC XML annotations into YOLO format.
+- Splitting the dataset into:
+  - Training
+  - Validation
+  - Testing
+
+---
+
+## Model Training
+
+Training was performed on:
+
+- Google Colab
+- Tesla T4 GPU
+- Ultralytics YOLO11s
+
+Training configuration:
+
+- Epochs: 50
+- Image size: 640×640
+
+---
+
+## Real-Time Detection
+
+### `head_alarm_detection.py`
+
+Provides:
+
+- Live webcam detection.
+- Missing helmet detection.
+- Audio alarm during safety violations.
+
+---
+
+## Web Application
+
+### `app.py`
+
+A Streamlit application supporting:
+
+- Image detection
+- Video detection
+- Webcam detection
+
+---
+
+# 🚀 Running Locally
+
+## 1. Create Virtual Environment
+
+```bash
 python3 -m venv venv
+
 source venv/bin/activate
+```
+
+---
+
+## 2. Install Dependencies
+
+```bash
 pip install ultralytics opencv-python streamlit streamlit-webrtc av
-Real-time webcam detection with alarm
-bash
+```
+
+---
+
+# 🎥 Real-Time Webcam Detection With Alarm
+
+Run:
+
+```bash
 python3 head_alarm_detection.py
+```
 
-Press q to quit.
+Press:
 
-Streamlit web app
-bash
+```
+q
+```
+
+to quit.
+
+---
+
+# 🌐 Streamlit Web Application
+
+Run:
+
+```bash
 streamlit run app.py
+```
 
-Supports image upload, video upload (with downloadable annotated output), and live browser webcam detection.
+The application supports:
 
-⚠️ Known limitations
-The model performs best on imagery similar to its training distribution (medium-distance, outdoor/industrial settings). Performance may degrade on out-of-distribution inputs, such as close-range indoor selfie-style webcam shots.
-The Streamlit webcam tab provides visual detection only (bounding boxes + on-frame text) — the audio alarm is not supported there due to a threading limitation in streamlit-webrtc. Use head_alarm_detection.py locally for the full audio alarm experience.
-In order to try the detction and the alarm real sound , run this file : python3 yolo_hardhat_detection/head_alarm_detection.py
+- Image upload with detection
+- Video upload with downloadable annotated output
+- Live browser webcam detection
 
-📁 Project structure
+---
+
+# ⚠️ Known Limitations
+
+The model performs best on images similar to its training distribution:
+
+- Medium-distance views
+- Outdoor industrial environments
+
+Performance may decrease on out-of-distribution inputs such as:
+
+- Close-range indoor images
+- Selfie-style webcam views
+
+---
+
+The Streamlit webcam tab provides visual detection only:
+
+- Bounding boxes
+- Detection labels
+
+The audio alarm is not supported in Streamlit because of threading limitations in `streamlit-webrtc`.
+
+For the complete experience with real-time audio alarms, run:
+
+```bash
+python3 head_alarm_detection.py
+```
+
+---
+
+# 📁 Project Structure
+
+```text
 yolo_hardhat_detection/
 │
 ├── app.py
@@ -64,13 +247,21 @@ yolo_hardhat_detection/
 ├── .gitignore
 │
 ├── models/
-│   └── best_final_model.pt
-|   └── Initial_model.pt
+│   ├── best_final_model.pt
+│   └── Initial_model.pt
 │
-├── assets/
-│   └── alarm.mp3
-│
+└── assets/
+    └── alarm.mp3
+```
 
-🙏 Acknowledgments
-Dataset: Hard Hat Detection by Andrew Mvd (Kaggle)
-Built with Ultralytics YOLO11
+---
+
+# 🙏 Acknowledgments
+
+Dataset:
+
+**Hard Hat Detection by Andrew Mvd (Kaggle)**
+
+Built with:
+
+**Ultralytics YOLO11**
